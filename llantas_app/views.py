@@ -40,17 +40,43 @@ def construir_matriz_edicion(costos_base):
 
 
 def preparar_costos_desde_post(request, costos_base):
-    # Usar indices para evitar problemas con caracteres en nombres de proveedor
+    # Crear copia de los costos actuales y aplicar únicamente los cambios enviados
     proveedores = list(costos_base.keys())
-    nuevos_costos = {}
-    for idx, proveedor in enumerate(proveedores):
-        nuevos_costos[proveedor] = {}
-        for llanta in tipos_llantas:
-            campo = f'costo_{idx}_{llanta}'
-            valor = request.POST.get(campo, '').strip()
-            if valor == '':
-                valor = costos_base[proveedor][llanta]
-            nuevos_costos[proveedor][llanta] = int(valor)
+    nuevos_costos = {p: costos_base[p].copy() for p in proveedores}
+
+    for campo, valor in request.POST.items():
+        if not campo.startswith('costo_'):
+            continue
+
+        parts = campo.split('_')
+        # Formato esperado: costo_{idx}_{llanta}
+        if len(parts) < 3:
+            continue
+
+        try:
+            idx = int(parts[1])
+            llanta = parts[2]
+            if llanta not in tipos_llantas:
+                continue
+            proveedor = proveedores[idx]
+        except (ValueError, IndexError):
+            continue
+
+        valor = valor.strip()
+        if valor == '':
+            # no cambiar si el campo viene vacío
+            continue
+
+        try:
+            nuevo_val = int(valor)
+        except ValueError:
+            # si no es entero, ignorar ese campo
+            continue
+
+        # Actualizar solo si es distinto (opcional) — evita sobrescribir con el mismo valor
+        if nuevos_costos[proveedor].get(llanta) != nuevo_val:
+            nuevos_costos[proveedor][llanta] = nuevo_val
+
     return nuevos_costos
 
 
