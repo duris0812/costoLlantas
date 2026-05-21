@@ -345,30 +345,30 @@
 
                 <thead>
                   <tr>
-                    <th>Llanta</th>
+                    <th>Proveedor</th>
 
-                    {% for proveedor in proveedores %}
-                      <th>{{ proveedor }}</th>
+                    {% for llanta in tipos_llantas %}
+                      <th>{{ llanta }}</th>
                     {% endfor %}
                   </tr>
                 </thead>
 
                 <tbody>
 
-                  {% for fila in tabla_costos %}
+                  {% for fila in matriz_edicion %}
                     <tr>
 
                       <td>
-                        <strong>{{ fila.llanta }}</strong>
+                        <strong>{{ fila.proveedor }}</strong>
                       </td>
 
-                      {% for valor in fila.valores %}
+                      {% for celda in fila.celdas %}
                         <td>
                           <input
                             type="number"
                             min="0"
-                            name="costo_{{ forloop.counter0 }}_{{ fila.llanta }}"
-                            value="{{ valor }}"
+                            name="costo_{{ fila.index }}_{{ celda.llanta }}"
+                            value="{{ celda.valor }}"
                           >
                         </td>
                       {% endfor %}
