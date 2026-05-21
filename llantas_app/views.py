@@ -43,6 +43,7 @@ def preparar_costos_desde_post(request, costos_base):
     # Crear copia de los costos actuales y aplicar únicamente los cambios enviados
     proveedores = list(costos_base.keys())
     nuevos_costos = {p: costos_base[p].copy() for p in proveedores}
+    cambios = []
 
     for campo, valor in request.POST.items():
         if not campo.startswith('costo_'):
@@ -74,10 +75,12 @@ def preparar_costos_desde_post(request, costos_base):
             continue
 
         # Actualizar solo si es distinto (opcional) — evita sobrescribir con el mismo valor
-        if nuevos_costos[proveedor].get(llanta) != nuevo_val:
+        viejo = nuevos_costos[proveedor].get(llanta)
+        if viejo != nuevo_val:
             nuevos_costos[proveedor][llanta] = nuevo_val
+            cambios.append((proveedor, llanta, viejo, nuevo_val))
 
-    return nuevos_costos
+    return nuevos_costos, cambios
 
 
 def guardar_costos_en_sesion(request, nuevos_costos):
@@ -153,15 +156,21 @@ def index(request):
         accion = request.POST.get('action')
         if accion == 'guardar_costos' or accion == 'buscar_solucion':
             try:
-                costos_base = preparar_costos_desde_post(request, costos_base)
-                guardar_costos_en_sesion(request, costos_base)
+                nuevos, cambios = preparar_costos_desde_post(request, costos_base)
+                guardar_costos_en_sesion(request, nuevos)
             except ValueError:
                 guardar_mensaje(request, 'Todos los costos deben ser números enteros.', 'error')
                 return redirect(request.path)
 
         if accion == 'guardar_costos':
             request.session.pop('mejor_solucion', None)
-            guardar_mensaje(request, 'Tabla actualizada correctamente.', 'success')
+            if cambios:
+                # construir mensaje con los cambios
+                partes = [f"{p} {l}: {o} → {n}" for (p, l, o, n) in cambios]
+                texto = 'Cambios guardados: ' + '; '.join(partes)
+            else:
+                texto = 'Tabla actualizada correctamente.'
+            guardar_mensaje(request, texto, 'success')
             return redirect(request.path)
 
         if accion == 'buscar_solucion':
