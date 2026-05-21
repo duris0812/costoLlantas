@@ -21,9 +21,12 @@ def obtener_costos_actuales(request):
 
 def construir_matriz_edicion(costos_base):
     matriz = []
-    for proveedor, valores in costos_base.items():
+    proveedores = list(costos_base.keys())
+    for idx, proveedor in enumerate(proveedores):
+        valores = costos_base[proveedor]
         fila = {
             'proveedor': proveedor,
+            'index': idx,
             'celdas': [
                 {
                     'llanta': llanta,
@@ -37,11 +40,13 @@ def construir_matriz_edicion(costos_base):
 
 
 def preparar_costos_desde_post(request, costos_base):
+    # Usar indices para evitar problemas con caracteres en nombres de proveedor
+    proveedores = list(costos_base.keys())
     nuevos_costos = {}
-    for proveedor in costos_base:
+    for idx, proveedor in enumerate(proveedores):
         nuevos_costos[proveedor] = {}
         for llanta in tipos_llantas:
-            campo = f'costo_{proveedor}_{llanta}'
+            campo = f'costo_{idx}_{llanta}'
             valor = request.POST.get(campo, '').strip()
             if valor == '':
                 valor = costos_base[proveedor][llanta]
