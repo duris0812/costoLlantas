@@ -183,11 +183,20 @@ def index(request):
             return redirect(request.path)
 
     proveedores, tabla_costos = construir_tabla_costos(costos_base)
+    # construir tabla por proveedor para la vista (empresas como filas)
+    tabla_por_proveedor = []
+    for proveedor in proveedores:
+        fila = {
+            'proveedor': proveedor,
+            'valores': [costos_base[proveedor][llanta] for llanta in tipos_llantas],
+        }
+        tabla_por_proveedor.append(fila)
     matriz_edicion = construir_matriz_edicion(costos_base)
 
     contexto = {
         'proveedores': proveedores,
         'tabla_costos': tabla_costos,
+        'tabla_por_proveedor': tabla_por_proveedor,
         'matriz_edicion': matriz_edicion,
         'mejor_solucion': mejor_solucion,
         'mensaje': mensaje,

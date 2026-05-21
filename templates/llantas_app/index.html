@@ -261,6 +261,28 @@
       margin: 8px 0;
     }
 
+    /* Estilos para la vista sin líneas */
+    .view-table {
+      border-collapse: separate;
+      border-spacing: 0 0.5rem;
+    }
+
+    .view-table th,
+    .view-table td {
+      border: none;
+      background: transparent;
+      padding: 16px;
+    }
+
+    .view-table tbody tr {
+      background: rgba(255,255,255,0.9);
+      box-shadow: none;
+    }
+
+    .view-table td strong {
+      font-weight: 700;
+    }
+
     .actions {
       display: flex;
       gap: 14px;
@@ -431,27 +453,24 @@
 
           {% else %}
 
-            <table>
+            <table class="view-table">
 
               <thead>
-                <tr>
-
-                  <th>Llanta</th>
-
-                  {% for proveedor in proveedores %}
-                    <th>{{ proveedor }}</th>
-                  {% endfor %}
-
-                </tr>
+                  <tr>
+                    <th>Proveedor</th>
+                    {% for llanta in tipos_llantas %}
+                      <th>{{ llanta }}</th>
+                    {% endfor %}
+                  </tr>
               </thead>
 
               <tbody>
 
-                {% for fila in tabla_costos %}
+                {% for fila in tabla_por_proveedor %}
                   <tr>
 
                     <td>
-                      <strong>{{ fila.llanta }}</strong>
+                      <strong>{{ fila.proveedor }}</strong>
                     </td>
 
                     {% for valor in fila.valores %}
