@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Proveedor de Llantas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: rgba(255, 255, 255, 0.9);
+      --border: #dbe4f0;
+      --text: #1f2937;
+      --muted: #6b7280;
+
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+
+      --success-bg: #ecfdf3;
+      --success-border: #bbf7d0;
+      --success-text: #166534;
+
+      --warning-bg: #fff7ed;
+      --warning-border: #fdba74;
+      --warning-text: #9a3412;
+
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 22px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Inter, system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 25%),
+        radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.08), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      padding: 32px 18px;
+    }
+
+    .container {
+      max-width: 1250px;
+      margin: auto;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #2563eb, #1e40af);
+      border-radius: 30px;
+      padding: 42px;
+      margin-bottom: 28px;
+      color: white;
+      box-shadow: 0 18px 40px rgba(37, 99, 235, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 50%;
+      top: -80px;
+      right: -80px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero p {
+      margin-top: 12px;
+      max-width: 700px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.85);
+      position: relative;
+      z-index: 2;
+    }
+
+    .stack {
+      display: grid;
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.4);
+      backdrop-filter: blur(14px);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 22px 26px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(248, 250, 252, 0.85);
+    }
+
+    .card-header h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .card-body {
+      padding: 24px 26px 28px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f8fafc;
+    }
+
+    th {
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      font-weight: 700;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 16px;
+      border-bottom: 1px solid #edf2f7;
+      font-size: 0.96rem;
+    }
+
+    tbody tr {
+      transition: all 0.18s ease;
+    }
+
+    tbody tr:hover {
+      background: rgba(37, 99, 235, 0.04);
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    strong {
+      color: #111827;
+    }
+
+    .message {
+      margin-bottom: 24px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      color: var(--warning-text);
+      font-weight: 500;
+    }
+
+    .message.success {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+      color: var(--success-text);
+    }
+
+    .message.error {
+      background: var(--warning-bg);
+      border-color: var(--warning-border);
+      color: var(--warning-text);
+    }
+
+    .total-box {
+      margin-top: 22px;
+      padding: 20px;
+      border-radius: 18px;
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      color: var(--success-text);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .note {
+      margin-top: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 0.94rem;
+    }
+
+    .empty {
+      padding: 24px;
+      border-radius: 18px;
+      border: 2px dashed var(--border);
+      text-align: center;
+      color: var(--muted);
+      background: #f8fafc;
+    }
+
+    .editor-table input {
+      width: 100%;
+      border: 1px solid #d6dee9;
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: 0.95rem;
+      background: white;
+      transition: all 0.2s ease;
+      color: var(--text);
+    }
+
+    .editor-table input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    button,
+    .secondary {
+      border: none;
+      border-radius: 14px;
+      padding: 13px 22px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 210px;
+    }
+
+    button {
+      background: linear-gradient(135deg, var(--primary), #1e40af);
+      color: white;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, var(--primary-hover), #1e3a8a);
+    }
+
+    .secondary {
+      background: #e2e8f0;
+      color: #334155;
+    }
+
+    .secondary:hover {
+      background: #cbd5e1;
+      transform: translateY(-2px);
+    }
+
+    form {
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 18px 12px;
+      }
+
+      .hero {
+        padding: 28px;
+      }
+
+      .card-header,
+      .card-body {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      button,
+      .secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <section class="hero">
+      <h1>Proveedores de Llantas</h1>
+      <p>
+        Comparador de precios (A*)
+      </p>
+    </section>
+
+    <section class="stack">
+
+      <article class="card">
+
+        <div class="card-header">
+          <h2>Tabla total de costos</h2>
+        </div>
+
+        <div class="card-body table-wrap">
+
+          {% if modo_edicion %}
+
+            <form method="post">
+              {% csrf_token %}
+
+              <input type="hidden" name="modo_edicion" value="1">
+
+              <table class="editor-table">
+
+                <thead>
+                  <tr>
+                    <th>Proveedor</th>
+
+                    {% for llanta in tipos_llantas %}
+                      <th>{{ llanta }}</th>
+                    {% endfor %}
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  {% for fila in matriz_edicion %}
+                    <tr>
+
+                      <td>
+                        <strong>{{ fila.proveedor }}</strong>
+                      </td>
+
+                      {% for celda in fila.celdas %}
+                        <td>
+                          <input
+                            type="number"
+                            min="0"
+                            name="costo_{{ fila.proveedor }}_{{ celda.llanta }}"
+                            value="{{ celda.valor }}"
+                          >
+                        </td>
+                      {% endfor %}
+
+                    </tr>
+                  {% endfor %}
+
+                </tbody>
+
+              </table>
+
+              <div class="actions">
+                <button type="submit" name="action" value="guardar_costos">
+                  Guardar tabla
+                </button>
+
+                <button type="submit" name="action" value="buscar_solucion">
+                  Buscar mejor solución
+                </button>
+
+                <a href="/" class="secondary">
+                  Cancelar edición
+                </a>
+              </div>
+
+              <div class="note">
+                Modifica los costos y ejecuta el cálculo para obtener la solución óptima.
+              </div>
+
+              {% if mensaje %}
+                <div class="message {% if mensaje_tipo == 'success' %}success{% else %}error{% endif %}">
+                  {{ mensaje }}
+                </div>
+              {% endif %}
+
+            </form>
+
+          {% else %}
+
+            <table>
+
+              <thead>
+                <tr>
+
+                  <th>Llanta</th>
+
+                  {% for proveedor in proveedores %}
+                    <th>{{ proveedor }}</th>
+                  {% endfor %}
+
+                </tr>
+              </thead>
+
+              <tbody>
+
+                {% for fila in tabla_costos %}
+                  <tr>
+
+                    <td>
+                      <strong>{{ fila.llanta }}</strong>
+                    </td>
+
+                    {% for valor in fila.valores %}
+                      <td>${{ valor }}</td>
+                    {% endfor %}
+
+                  </tr>
+                {% endfor %}
+
+              </tbody>
+
+            </table>
+
+            <div class="actions">
+
+              <form method="get">
+                <input type="hidden" name="editar" value="1">
+
+                <button type="submit">
+                  Editar tabla
+                </button>
+              </form>
+
+              <form method="post">
+                {% csrf_token %}
+
+                <button type="submit" name="action" value="buscar_solucion">
+                  Buscar mejor solución
+                </button>
+              </form>
+
+            </div>
+
+            
+
+            {% if mensaje %}
+              <div class="message {% if mensaje_tipo == 'success' %}success{% else %}error{% endif %}">
+                {{ mensaje }}
+              </div>
+            {% endif %}
+
+          {% endif %}
+
+        </div>
+
+      </article>
+
+      <article class="card">
+
+        <div class="card-header">
+          <h2>Mejor solución encontrada</h2>
+        </div>
+
+        <div class="card-body table-wrap">
+
+          {% if mejor_solucion %}
+
+            <table>
+
+              <thead>
+                <tr>
+                  <th>Llanta</th>
+                  <th>Proveedor</th>
+                  <th>Costo</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                {% for fila in mejor_solucion.filas %}
+                  <tr>
+
+                    <td>
+                      <strong>{{ fila.llanta }}</strong>
+                    </td>
+
+                    <td>{{ fila.proveedor }}</td>
+
+                    <td>${{ fila.costo }}</td>
+
+                  </tr>
+                {% endfor %}
+
+              </tbody>
+
+            </table>
+
+            <div class="total-box">
+              Costo mínimo total: ${{ mejor_solucion.total }}
+            </div>
+
+          {% else %}
+
+            <div class="empty">
+              Aún no se ha ejecutado la búsqueda de la mejor solución.
+            </div>
+
+          {% endif %}
+
+        </div>
+
+      </article>
+
+    </section>
+
+  </main>
+
+</body>
+</html>
