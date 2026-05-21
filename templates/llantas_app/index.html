@@ -130,6 +130,7 @@
       width: 100%;
       min-width: 600px;
       border-collapse: collapse;
+      table-layout: fixed;
     }
 
     thead {
@@ -218,7 +219,9 @@
     }
 
     .editor-table input {
-      width: 100%;
+      width: 90px;
+      max-width: 100%;
+      box-sizing: border-box;
       border: 1px solid #d6dee9;
       border-radius: 12px;
       padding: 11px 14px;
@@ -226,6 +229,7 @@
       background: white;
       transition: all 0.2s ease;
       color: var(--text);
+      text-align: right;
     }
 
     .editor-table input:focus {
