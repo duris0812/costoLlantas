@@ -81,7 +81,22 @@ def preparar_costos_desde_post(request, costos_base):
 
 
 def guardar_costos_en_sesion(request, nuevos_costos):
-    request.session['costos_personalizados'] = nuevos_costos
+    # Mezclar con los costos ya guardados para evitar sobrescribir accidentalmente
+    actuales = request.session.get('costos_personalizados', None)
+    if actuales is None:
+        # No había costos personalizados, guardar todo
+        request.session['costos_personalizados'] = nuevos_costos
+        return
+
+    # Actualizar únicamente las celdas que vienen en nuevos_costos
+    for proveedor, valores in nuevos_costos.items():
+        if proveedor not in actuales:
+            actuales[proveedor] = valores.copy()
+            continue
+        for llanta, precio in valores.items():
+            actuales[proveedor][llanta] = precio
+
+    request.session['costos_personalizados'] = actuales
 
 
 def guardar_resultado_en_sesion(request, resultado):
