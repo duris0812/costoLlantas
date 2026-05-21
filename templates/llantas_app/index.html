@@ -258,7 +258,8 @@
 
     /* Reducir padding de celdas de inputs para que encajen mejor */
     .editor-table td input {
-      margin: 8px 0;
+      margin: 8px auto;
+      display: block;
     }
 
     /* Estilos para la vista sin líneas */
@@ -273,6 +274,14 @@
       background: transparent;
       padding: 16px;
     }
+
+    /* Centrar valores en vista, dejar nombre del proveedor alineado a la izquierda */
+    .view-table td:first-child { text-align: left; }
+    .view-table td:not(:first-child) { text-align: center; }
+
+    /* Centrar inputs en la tabla de edición, mantener proveedor a la izquierda */
+    .editor-table td { text-align: center; }
+    .editor-table td:first-child { text-align: left; }
 
     .view-table tbody tr {
       background: rgba(255,255,255,0.9);
@@ -429,18 +438,9 @@
                 <button type="submit" name="action" value="guardar_costos">
                   Guardar tabla
                 </button>
-
-                <button type="submit" name="action" value="buscar_solucion">
-                  Buscar mejor solución
-                </button>
-
                 <a href="/" class="secondary">
                   Cancelar edición
                 </a>
-              </div>
-
-              <div class="note">
-                Modifica los costos y ejecuta el cálculo para obtener la solución óptima.
               </div>
 
               {% if mensaje %}
