@@ -238,6 +238,29 @@
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
+    /* Estilo para mostrar la columna de proveedores como barra lateral vertical */
+    .editor-table td:first-child,
+    .editor-table th:first-child {
+      width: 220px;
+      vertical-align: middle;
+      background: transparent;
+      border-right: 1px solid var(--border);
+    }
+
+    .editor-table td:first-child strong {
+      display: block;
+      padding: 14px 18px;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    /* Reducir padding de celdas de inputs para que encajen mejor */
+    .editor-table td input {
+      margin: 8px 0;
+    }
+
     .actions {
       display: flex;
       gap: 14px;
